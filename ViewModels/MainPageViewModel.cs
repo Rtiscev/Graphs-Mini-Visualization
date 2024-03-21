@@ -189,34 +189,14 @@ namespace AI_Graphs.ViewModels
 			}
 			else if (SelectedIndex == (int)SearchAlgorithms.A_Star)
 			{
-				var graph2 = new List<List<AStar.Node2>>();
-				foreach (var ff in graph.adjList)
-				{
-					var minigraph2 = new List<AStar.Node2>();
-					foreach (var gg in ff)
-					{
-						minigraph2.Add(new AStar.Node2() { Country = gg.country, Weight = gg.weight, Id = default, TotalCost = default });
-					}
-					graph2.Add(minigraph2);
-				}
-				path = AStar.FindPath(graph2, heuristicDistances, startC, endC);
+				IGraph2Adapter graph2Adapter = new Graph2Adapter(graph);
+				path = AStar.FindPath(graph2Adapter.GetAdjacencyList(), heuristicDistances, startC, endC);
 			}
 			else if (SelectedIndex == (int)SearchAlgorithms.Uniform_Cost)
 			{
-				//var graph4 = new List<List<Node9>>();
-				//foreach (var ff in graph.adjList)
-				//{
-				//	var minigraph4 = new List<Node9>();
-				//	foreach (var gg in ff)
-				//	{
-				//		minigraph4.Add(new Node9(gg.country, gg.weight));
-				//	}
-				//	graph4.Add(minigraph4);
-				//}
-
-				IGraphAdapter graphAdapter = new GraphAdapter(graph);
+				IGraph9Adapter graph9Adapter = new Graph9Adapter(graph);
 				UniformCostSearch ucs = new();
-				path = ucs.FindPath(graphAdapter.GetAdjacencyList(), startC, endC);
+				path = ucs.FindPath(graph9Adapter.GetAdjacencyList(), startC, endC);
 			}
 			else if (SelectedIndex == (int)SearchAlgorithms.Greedy_Best_First_Search)
 			{
@@ -226,7 +206,6 @@ namespace AI_Graphs.ViewModels
 			{
 				path = BidirectionalSearch.BiDirSearch(graph, startC, endC);
 			}
-			//var path = BFS.Search(graph, startC, endC);
 
 			Canvas.Paths = null;
 			Canvas.TraceableLines = new();
