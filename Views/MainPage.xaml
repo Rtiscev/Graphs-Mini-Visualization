@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AI_Graphs.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:AI_Graphs.Models"
+    xmlns:viewmodels="clr-namespace:AI_Graphs.ViewModels"
+    x:DataType="viewmodels:MainPageViewModel">
+
+    <Grid
+        Padding="30"
+        ColumnDefinitions="*,5*"
+        HorizontalOptions="Fill"
+        RowDefinitions="auto,*"
+        VerticalOptions="Fill">
+
+        <Grid
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            ColumnDefinitions=".2*,auto,auto,auto,auto,auto,auto,auto">
+            <Slider
+                Grid.Column="0"
+                Maximum="50"
+                Minimum="30"
+                VerticalOptions="Center"
+                Value="{Binding NodesSize}" />
+            <Button
+                Grid.Column="1"
+                Command="{Binding GraphInitCommand}"
+                IsEnabled="{Binding IsNotInitialized}"
+                Text="Load data from .csv and initiate graph" />
+            <Button
+                Grid.Column="2"
+                Command="{Binding ReDrawCommand}"
+                IsEnabled="{Binding IsLocked}"
+                Text="Change balls size" />
+            <Button
+                Grid.Column="3"
+                Command="{Binding ChangeColorsCommand}"
+                IsEnabled="{Binding IsLocked}"
+                Text="Change balls color" />
+            <Button
+                Grid.Column="4"
+                Command="{Binding RandomizeNodesCommand}"
+                IsEnabled="{Binding IsLocked}"
+                Text="Reset balls position" />
+            <Grid
+                Grid.Column="5"
+                ColumnDefinitions="*,*"
+                RowDefinitions="*,*">
+
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    HorizontalTextAlignment="Center"
+                    Text="From"
+                    VerticalTextAlignment="Center" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    HorizontalTextAlignment="Center"
+                    Text="To"
+                    VerticalTextAlignment="Center" />
+                <Picker
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    IsEnabled="{Binding IsLocked}"
+                    ItemsSource="{Binding Cities}"
+                    SelectedItem="{Binding SelectedCity1}" />
+                <Picker
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    IsEnabled="{Binding IsLocked}"
+                    ItemsSource="{Binding Cities}"
+                    SelectedItem="{Binding SelectedCity2}" />
+            </Grid>
+
+            <Grid Grid.Column="6" RowDefinitions="*,*">
+                <Label
+                    Grid.Row="0"
+                    HorizontalTextAlignment="Center"
+                    Text="Choose Method:"
+                    VerticalTextAlignment="Center" />
+                <Picker
+                    Grid.Row="1"
+                    HorizontalOptions="CenterAndExpand"
+                    IsEnabled="{Binding IsLocked}"
+                    ItemsSource="{Binding Methods}"
+                    SelectedIndex="{Binding SelectedIndex}"
+                    SelectedItem="{Binding SelectedMethod}" />
+            </Grid>
+
+            <Button
+                Grid.Column="7"
+                Command="{Binding FindPathCommand}"
+                IsEnabled="{Binding IsLocked}"
+                Text="Find Path" />
+        </Grid>
+
+        <GraphicsView
+            x:Name="MainCanvas"
+            Grid.Row="1"
+            Grid.Column="1"
+            Drawable="{Binding Canvas}"
+            HorizontalOptions="Fill"
+            MinimumHeightRequest="300"
+            VerticalOptions="Fill" />
+
+        <Grid
+            Grid.Row="1"
+            Grid.Column="0"
+            RowDefinitions="*,*"
+            RowSpacing="15">
+
+            <Border Grid.Row="0">
+                <CollectionView ItemsLayout="VerticalList" ItemsSource="{Binding CountriesNodes}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:CountryAndID">
+                            <Frame>
+                                <HorizontalStackLayout>
+                                    <Label Text="{Binding CountryID}" />
+                                    <Label Text=" - " />
+                                    <Label Text="{Binding CountryName}" />
+                                </HorizontalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Border>
+
+            <Border Grid.Row="1" Padding="20">
+                <Grid
+                    Grid.Row="1"
+                    RowDefinitions="auto,*"
+                    RowSpacing="20">
+                    <HorizontalStackLayout Grid.Row="0" Spacing="5">
+                        <Label
+                            HorizontalTextAlignment="Center"
+                            Text="Path from "
+                            VerticalTextAlignment="Center" />
+                        <Label Text="{Binding SelectedCity1}" TextColor="Red" />
+                        <Label Text=" to " />
+                        <Label Text="{Binding SelectedCity2}" TextColor="Red" />
+                        <Label Text=":" />
+                    </HorizontalStackLayout>
+                    <CollectionView
+                        Grid.Row="1"
+                        ItemsLayout="VerticalList"
+                        ItemsSource="{Binding Paths}"
+                        ItemsUpdatingScrollMode="KeepLastItemInView">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:PathModel">
+                                <VerticalStackLayout>
+                                    <Frame Padding="0,10">
+                                        <HorizontalStackLayout Spacing="5">
+                                            <Label Text="{Binding CName}" />
+                                            <Label
+                                                FontAttributes="Bold"
+                                                Text="{Binding CID}"
+                                                TextColor="GreenYellow" />
+                                        </HorizontalStackLayout>
+                                    </Frame>
+                                    <BoxView
+                                        HeightRequest="20"
+                                        HorizontalOptions="Fill"
+                                        Opacity="{Binding BoxOpacity}"
+                                        WidthRequest="3"
+                                        Color="Red" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>
