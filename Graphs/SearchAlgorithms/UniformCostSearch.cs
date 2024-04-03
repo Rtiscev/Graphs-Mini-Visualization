@@ -1,13 +1,18 @@
-﻿namespace AI_Graphs.Graphs
-{
-	public class UniformCostSearch
-	{
-		private List<List<Node9>> adjList;
+﻿using AI_Graphs.AdapterPattern;
 
-		public List<int> FindPath(List<List<Node9>> adjList, int startNode, int endNode)
+namespace AI_Graphs.Graphs
+{
+	public static class UniformCostSearch
+	{
+		private static List<List<Node9>> adjList;
+
+		public static List<int> FindPath(Graph graph, int startNode, int endNode)
 		{
+			IGraph9Adapter graph9Adapter = new Graph9Adapter(graph);
+			adjList = graph9Adapter.GetAdjacencyList();
+			
 			List<int> path = new List<int>();
-			HashSet<int> visited = new HashSet<int>();
+			HashSet<int> visited = new();
 
 			PriorityQueue<Node> priorityQueue = new PriorityQueue<Node>((x, y) => x.Cost.CompareTo(y.Cost));
 			Dictionary<int, int> parent = new Dictionary<int, int>();
@@ -39,7 +44,7 @@
 			return null; // No path found
 		}
 
-		private List<int> ReconstructPath(Dictionary<int, int> parent, int currentNode)
+		private static List<int> ReconstructPath(Dictionary<int, int> parent, int currentNode)
 		{
 			List<int> path = new List<int>();
 			while (parent.ContainsKey(currentNode))
@@ -122,7 +127,6 @@
 			}
 		}
 	}
-
 
 	public class Node9
 	{

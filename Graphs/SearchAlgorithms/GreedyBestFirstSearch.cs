@@ -1,49 +1,41 @@
 ﻿namespace AI_Graphs.Graphs
 {
-	public static class AStar
+	public static class GreedyBestFirstSearch
 	{
-		private static List<List<Node2>> _adjList;
+		private static List<List<Node>> _adjList;
 		private static Dictionary<int, int> _heuristicDistances;
 
-		public static List<int> FindPath(List<List<Node2>> adjList, Dictionary<int, int> heuristicDistances, int startNode, int endNode)
+		public static List<int> FindPath(Graph graph, Dictionary<int, int> distances, int startNode, int endNode)
 		{
-			_adjList = adjList;
-			_heuristicDistances = heuristicDistances;
+			_adjList = graph.adjList;
+			_heuristicDistances = distances;
 
 			List<int> path = new List<int>();
 			HashSet<int> visited = new HashSet<int>();
 
-			PriorityQueue<Node2> priorityQueue = new PriorityQueue<Node2>((x, y) => x.TotalCost.CompareTo(y.TotalCost));
-			Dictionary<int, int> gCosts = new Dictionary<int, int>();
+			PriorityQueue<int> priorityQueue = new PriorityQueue<int>((x, y) => _heuristicDistances[x] - _heuristicDistances[y]);
 			Dictionary<int, int> parent = new Dictionary<int, int>();
 
-			priorityQueue.Enqueue(new Node2(startNode, 0, _heuristicDistances[startNode]));
-			gCosts[startNode] = 0;
+			priorityQueue.Enqueue(startNode);
 			visited.Add(startNode);
 
 			while (priorityQueue.Count > 0)
 			{
-				Node2 currentNode = priorityQueue.Dequeue();
+				int currentNode = priorityQueue.Dequeue();
 
-				if (currentNode.Id == endNode)
+				if (currentNode == endNode)
 				{
-					path = ReconstructPath(parent, currentNode.Id);
+					path = ReconstructPath(parent, currentNode);
 					return path;
 				}
 
-				foreach (var neighbor in _adjList[currentNode.Id])
+				foreach (var neighbor in _adjList[currentNode])
 				{
-					int tentativeGCost = gCosts[currentNode.Id] + neighbor.Weight;
-					if (!gCosts.ContainsKey(neighbor.Country) || tentativeGCost < gCosts[neighbor.Country])
+					if (!visited.Contains(neighbor.country))
 					{
-						gCosts[neighbor.Country] = tentativeGCost;
-						int totalCost = tentativeGCost + _heuristicDistances[neighbor.Country];
-						if (!visited.Contains(neighbor.Country))
-						{
-							visited.Add(neighbor.Country);
-							parent[neighbor.Country] = currentNode.Id;
-							priorityQueue.Enqueue(new Node2(neighbor.Country, tentativeGCost, totalCost));
-						}
+						visited.Add(neighbor.country);
+						parent[neighbor.country] = currentNode;
+						priorityQueue.Enqueue(neighbor.country);
 					}
 				}
 			}
@@ -61,22 +53,6 @@
 			}
 			path.Insert(0, currentNode);
 			return path;
-		}
-
-		public struct Node2
-		{
-			public int Country { get; set; }
-			public int Weight { get; set; }
-			public int Id { get; set; }
-			public int TotalCost { get; set; }
-
-			public Node2(int country, int weight, int totalCost)
-			{
-				Country = country;
-				Weight = weight;
-				Id = country; // Assuming Id is same as Country in this context
-				TotalCost = totalCost;
-			}
 		}
 
 		// Priority Queue implementation

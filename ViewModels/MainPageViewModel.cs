@@ -1,7 +1,9 @@
 ﻿using AI_Graphs.Graphs;
 using AI_Graphs.Models;
+using AI_Graphs.StrategyPattern;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Handlers;
 using System.Collections.ObjectModel;
 using System.Numerics;
 using System.Text;
@@ -179,33 +181,33 @@ namespace AI_Graphs.ViewModels
 			var startC = citiesIndex.FirstOrDefault(x => x.Value == SelectedCity1).Key;
 			var endC = citiesIndex.FirstOrDefault(x => x.Value == SelectedCity2).Key;
 			List<int> path = new();
+			SearchContext ctx = new();
 			if (SelectedIndex == (int)SearchAlgorithms.Depth_First_Search)
 			{
-				path = DFS.Search(graph, startC, endC);
+				ctx.SetSearchStrategy(new DFS_Strategy());
 			}
 			else if (SelectedIndex == (int)SearchAlgorithms.Breath_First_Search)
 			{
-				path = BFS.Search(graph, startC, endC);
+				ctx.SetSearchStrategy(new BFS_Strategy());
 			}
 			else if (SelectedIndex == (int)SearchAlgorithms.A_Star)
 			{
-				IGraph2Adapter graph2Adapter = new Graph2Adapter(graph);
-				path = AStar.FindPath(graph2Adapter.GetAdjacencyList(), heuristicDistances, startC, endC);
+				ctx.SetSearchStrategy(new AStar_Strategy());
 			}
 			else if (SelectedIndex == (int)SearchAlgorithms.Uniform_Cost)
 			{
-				IGraph9Adapter graph9Adapter = new Graph9Adapter(graph);
-				UniformCostSearch ucs = new();
-				path = ucs.FindPath(graph9Adapter.GetAdjacencyList(), startC, endC);
+				ctx.SetSearchStrategy(new UniformCost_Strategy());
 			}
 			else if (SelectedIndex == (int)SearchAlgorithms.Greedy_Best_First_Search)
 			{
-				path = GreedyBestFirstSearch.FindPath(graph.adjList, heuristicDistances, startC, endC);
+				ctx.SetSearchStrategy(new GreedyBestFirst_Strategy());
 			}
 			else if (SelectedIndex == (int)SearchAlgorithms.Bidirectional_Search)
 			{
-				path = BidirectionalSearch.BiDirSearch(graph, startC, endC);
+				ctx.SetSearchStrategy(new Bidirectional_Strategy());
 			}
+
+			path = ctx.FindPath(graph, startC, endC, heuristicDistances);
 
 			Canvas.Paths = null;
 			Canvas.TraceableLines = new();

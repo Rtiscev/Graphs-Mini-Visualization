@@ -86,6 +86,5 @@ namespace AI_Graphs.DrawingMethods
 		{
 			return NodesLocations;
 		}
-
 	}
 }
