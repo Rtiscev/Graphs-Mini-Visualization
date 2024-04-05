@@ -1,9 +1,13 @@
 ﻿using AI_Graphs.Graphs;
+using AI_Graphs.SingletonPattern;
+using AI_Graphs.Utils;
+
 #pragma warning disable
 
 namespace AI_Graphs.DrawingMethods
 {
-	class SimpleDraw : DrawingMethod
+    // concrete product
+    class SimpleDraw : IDrawingMethod
 	{
 		private float Radius;
 		private List<MyPoint> NodesLocations;
@@ -11,25 +15,26 @@ namespace AI_Graphs.DrawingMethods
 		private int Amount;
 		private List<List<Node>> AdjList;
 		private List<int> Paths;
-		public SimpleDraw(float radius, int amount, List<List<Node>> adjList, List<Color> colorsList, List<int> paths)
+		public SimpleDraw()
 		{
-			Radius = radius;
-			Amount = amount;
+			DataCollection.GetInstance().NodesLocations.Clear();
+			Radius = DataCollection.GetInstance().Radius;
+			Amount = DataCollection.GetInstance().Amount;
+			AdjList = DataCollection.GetInstance().AdjList;
+			ColorsList = DataCollection.GetInstance().ColorsList;
+			Paths = DataCollection.GetInstance().Paths;
 			NodesLocations = new();
-			AdjList = adjList;
-			ColorsList = colorsList;
-			Paths = paths;
 		}
 
-		public override async Task Draw(ICanvas canvas, RectF dirtyRect)
+		public async Task Draw(ICanvas canvas, RectF dirtyRect)
 		{
-			NodesLocations = Utils.GeneratePoints((int)dirtyRect.Width, (int)dirtyRect.Height, Amount, (int)Radius / 2);
+			NodesLocations = AI_Graphs.Utils.Utils.GeneratePoints((int)dirtyRect.Width, (int)dirtyRect.Height, Amount, (int)Radius);
 
 			// draw lines
 			int colorI = 0;
 			if (ColorsList is null)
 			{
-				ColorsList = Utils.RandomColors(Amount);
+				ColorsList = AI_Graphs.Utils.Utils.RandomColors(Amount);
 			}
 			List<Color> colors = ColorsList;
 
@@ -75,16 +80,9 @@ namespace AI_Graphs.DrawingMethods
 
 				colorI++;
 			}
-		}
 
-		public override List<Color> ReturnColors()
-		{
-			return ColorsList;
-		}
-
-		public override List<MyPoint> ReturnNodesList()
-		{
-			return NodesLocations;
+			DataCollection.GetInstance().ColorsList = ColorsList;
+			DataCollection.GetInstance().NodesLocations = NodesLocations;
 		}
 	}
 }

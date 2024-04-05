@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AI_Graphs.Views;
+using Microsoft.Extensions.Logging;
 
 namespace AI_Graphs
 {
@@ -18,6 +19,11 @@ namespace AI_Graphs
 #if DEBUG
 			builder.Logging.AddDebug();
 #endif
+			builder.Services.AddSingleton<ViewModels.ImageProcViewModel>();
+			builder.Services.AddSingleton<ViewModels.MainPageViewModel>();
+
+			builder.Services.AddSingleton<MainPage>();
+			builder.Services.AddSingleton<ImageProc>();
 
 			return builder.Build();
 		}

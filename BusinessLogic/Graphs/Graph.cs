@@ -1,4 +1,7 @@
-﻿namespace AI_Graphs.Graphs
+﻿using AI_Graphs.BusinessLogic.IteratorPattern;
+using static AI_Graphs.BusinessLogic.IteratorPattern.IAbstractCollection;
+
+namespace AI_Graphs.Graphs
 {
 	// Adaptee for IGraph2Adapter and IGraph9Adapter
 	public class Graph
@@ -32,5 +35,17 @@
 		{
 			country = c; weight = w;
 		}
+	}
+
+	public class AdjencyListModel
+	{
+		public IAdjacencyListAggregate AdjList { get; private set; }
+
+		public AdjencyListModel(List<List<Node>> adjList)
+		{
+			AdjList = new AdjacencyList(adjList); // Create the concrete aggregate
+		}
+
+		// ... other members and methods
 	}
 }

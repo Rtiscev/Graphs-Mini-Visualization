@@ -1,16 +1,17 @@
-﻿using AI_Graphs.Graphs;
+﻿using AI_Graphs.DrawingMethods;
+using AI_Graphs.Graphs;
 using AI_Graphs.Models;
+using AI_Graphs.SingletonPattern;
 using AI_Graphs.StrategyPattern;
+using AI_Graphs.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Handlers;
 using System.Collections.ObjectModel;
 using System.Numerics;
-using System.Text;
 
 namespace AI_Graphs.ViewModels
 {
-	public partial class MainPageViewModel : ObservableObject
+    public partial class MainPageViewModel : ObservableObject
 	{
 		public event EventHandler<StringEventArgs> WorkCompleted;
 		public event EventHandler<StringEventArgs> DisplayMsg;
@@ -53,7 +54,7 @@ namespace AI_Graphs.ViewModels
 
 		Dictionary<int, int> heuristicDistances;
 		Dictionary<int, string> citiesIndex;
-		Graphs.Graph graph;
+		Graph graph;
 		public MainPageViewModel()
 		{
 			Canvas = new();
@@ -93,7 +94,7 @@ namespace AI_Graphs.ViewModels
 			}
 
 			string content;
-			using (StreamReader reader = new(System.IO.Path.Combine(rootPath, "Input\\map.csv")))
+			using (StreamReader reader = new(System.IO.Path.Combine(rootPath, "BusinessLogic\\Input\\map.csv")))
 			{
 				content = reader.ReadToEnd();
 			}
@@ -161,8 +162,8 @@ namespace AI_Graphs.ViewModels
 			IsLocked = true;
 			IsNotInitialized = false;
 			Canvas.IsInitialized = true;
-			Canvas.Amount = graph.numVertices;
-			Canvas.AdjList = graph.adjList;
+			DataCollection.GetInstance().Amount = graph.numVertices;
+			DataCollection.GetInstance().AdjList = graph.adjList;
 			WorkCompleted?.Invoke(this, new(""));
 		}
 
@@ -180,7 +181,7 @@ namespace AI_Graphs.ViewModels
 
 			var startC = citiesIndex.FirstOrDefault(x => x.Value == SelectedCity1).Key;
 			var endC = citiesIndex.FirstOrDefault(x => x.Value == SelectedCity2).Key;
-			List<int> path = new();
+
 			SearchContext ctx = new();
 			if (SelectedIndex == (int)SearchAlgorithms.Depth_First_Search)
 			{
@@ -207,18 +208,17 @@ namespace AI_Graphs.ViewModels
 				ctx.SetSearchStrategy(new Bidirectional_Strategy());
 			}
 
-			path = ctx.FindPath(graph, startC, endC, heuristicDistances);
-
-			Canvas.Paths = null;
-			Canvas.TraceableLines = new();
+			List<int> path = ctx.FindPath(graph, startC, endC, heuristicDistances);
+			DataCollection.GetInstance().Paths = null;
+			DataCollection.GetInstance().TraceableLines = new();
 			if (path != null)
 			{
 				for (int i = 0; i < path.Count - 1; i++)
 				{
 					Paths.Add(new(i + 1, citiesIndex[path[i]], path[i], 1));
 					// get current city 
-					Vector2 fromCity = new(Canvas.NodesLocations[path[i]].X, Canvas.NodesLocations[path[i]].Y);
-					Vector2 toCity = new(Canvas.NodesLocations[path[i + 1]].X, Canvas.NodesLocations[path[i + 1]].Y);
+					Vector2 fromCity = new(DataCollection.GetInstance().NodesLocations[path[i]].X, DataCollection.GetInstance().NodesLocations[path[i]].Y);
+					Vector2 toCity = new(DataCollection.GetInstance().NodesLocations[path[i + 1]].X, DataCollection.GetInstance().NodesLocations[path[i + 1]].Y);
 					// and city that it goes to
 
 					float lerpFactor = 0;
@@ -226,8 +226,8 @@ namespace AI_Graphs.ViewModels
 					{
 						lerpFactor += 0.01f;
 						Canvas.IsTraceable = true;
-						Canvas.FromIndex = path[i];
-						Canvas.NewPosition = Vector2.Lerp(fromCity, toCity, lerpFactor);
+						DataCollection.GetInstance().FromIndex = path[i];
+						DataCollection.GetInstance().NewPosition = Vector2.Lerp(fromCity, toCity, lerpFactor);
 						IsLocked = false;
 						WorkCompleted?.Invoke(this, new(""));
 						await Task.Delay(10);
@@ -238,7 +238,7 @@ namespace AI_Graphs.ViewModels
 				IsLocked = true;
 				IsNotInitialized = false;
 				// add the last item
-				Canvas.Paths = path;
+				DataCollection.GetInstance().Paths = path;
 			}
 			else
 			{

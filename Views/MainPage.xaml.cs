@@ -1,16 +1,14 @@
-﻿using AI_Graphs.ViewModels;
+﻿using AI_Graphs.Utils;
+using AI_Graphs.ViewModels;
 
 namespace AI_Graphs
 {
-	public partial class MainPage : ContentPage
+    public partial class MainPage : ContentPage
 	{
-		MainPageViewModel viewModel;
-
-		public MainPage()
+		public MainPage(MainPageViewModel viewModel)
 		{
 			InitializeComponent();
 
-			viewModel = new();
 			BindingContext = viewModel;
 
 			viewModel.WorkCompleted += InitiateRedraw;

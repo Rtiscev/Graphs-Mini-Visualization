@@ -4,11 +4,16 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:AI_Graphs"
+    xmlns:local2="clr-namespace:AI_Graphs.Views"
     Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <Tab Title="Work with graph">
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+        </Tab>
 
+        <Tab Title="View Images">
+            <ShellContent ContentTemplate="{DataTemplate local2:ImageProc}" />
+        </Tab>
+    </TabBar>
 </Shell>

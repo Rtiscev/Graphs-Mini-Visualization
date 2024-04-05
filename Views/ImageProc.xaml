@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AI_Graphs.Views.ImageProc"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Grid ColumnDefinitions="auto,*">
+        <Grid Grid.Column="0" RowDefinitions="auto,auto,auto,auto,auto">
+            <Button
+                Grid.Row="0"
+                Grid.Column="0"
+                Command="{Binding FlipCommand}"
+                Text="Flip" />
+            <Button
+                Grid.Row="1"
+                Grid.Column="0"
+                Command="{Binding BlurCommand}"
+                Text="Blur" />
+            <Button
+                Grid.Row="1"
+                Grid.Column="0"
+                Command="{Binding ExportPNGCommand}"
+                Text="Blur" />
+            <Button
+                Grid.Row="1"
+                Grid.Column="0"
+                Command="{Binding ExportJpegCommand}"
+                Text="Blur" />
+        </Grid>
+        <Image Grid.Column="1" Source="{Binding WorkingImage}" />
+    </Grid>
+</ContentPage>

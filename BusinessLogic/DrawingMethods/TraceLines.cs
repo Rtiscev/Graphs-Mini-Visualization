@@ -1,9 +1,13 @@
 ﻿using AI_Graphs.Graphs;
-using System.Linq;
 using System.Numerics;
+using SkiaSharp;
+using AI_Graphs.SingletonPattern;
+using AI_Graphs.Utils;
+
 namespace AI_Graphs.DrawingMethods
 {
-	public class TraceLines : DrawingMethod
+    // concrete product
+    public class TraceLines : IDrawingMethod
 	{
 		private float Radius;
 		private List<MyPoint> NodesLocations;
@@ -14,22 +18,22 @@ namespace AI_Graphs.DrawingMethods
 		private int FromIndex;
 		public List<Dictionary<int, Vector2>> TraceableLines;
 
-		public TraceLines(float radius, int amount, List<List<Node>> adjList, List<Color> colorsList, List<MyPoint> nodesLocations, int fromIndex, Vector2 newPoint, List<Dictionary<int, Vector2>> traceableLines)
+		public TraceLines()
 		{
-			Radius = radius;
-			Amount = amount;
-			NodesLocations = nodesLocations;
-			TraceableLines = traceableLines;
-			AdjList = adjList;
-			ColorsList = colorsList;
-			NewPoint = newPoint;
-			FromIndex = fromIndex;
+			Radius = DataCollection.GetInstance().Radius;
+			Amount = DataCollection.GetInstance().Amount;
+			NodesLocations = DataCollection.GetInstance().NodesLocations;
+			TraceableLines = DataCollection.GetInstance().TraceableLines;
+			AdjList = DataCollection.GetInstance().AdjList;
+			ColorsList = DataCollection.GetInstance().ColorsList;
+			NewPoint = DataCollection.GetInstance().NewPosition;
+			FromIndex = DataCollection.GetInstance().FromIndex;
 		}
-		public override async Task Draw(ICanvas canvas, RectF dirtyRect)
+		public async Task Draw(ICanvas canvas, RectF dirtyRect)
 		{
 			int colorI = 0;
 			// remember to check how this works
-			ColorsList ??= Utils.RandomColors(Amount);
+			ColorsList ??= AI_Graphs.Utils.Utils.RandomColors(Amount);
 			List<Color> colors = ColorsList;
 
 			canvas.StrokeSize = 6;
@@ -65,7 +69,7 @@ namespace AI_Graphs.DrawingMethods
 			}
 
 			// draw new
-			if (TraceableLines.Count > 0 && Utils.CheckIfKeyExists(TraceableLines, FromIndex))
+			if (TraceableLines.Count > 0 && AI_Graphs.Utils.Utils.CheckIfKeyExists(TraceableLines, FromIndex))
 			{
 				TraceableLines[^1] = dic1;
 			}
@@ -93,17 +97,9 @@ namespace AI_Graphs.DrawingMethods
 
 				colorI++;
 			}
-		}
 
-		public override List<Color> ReturnColors()
-		{
-			return ColorsList;
+			DataCollection.GetInstance().ColorsList = ColorsList;
+			DataCollection.GetInstance().NodesLocations = NodesLocations;
 		}
-
-		public override List<MyPoint> ReturnNodesList()
-		{
-			return NodesLocations;
-		}
-
 	}
 }

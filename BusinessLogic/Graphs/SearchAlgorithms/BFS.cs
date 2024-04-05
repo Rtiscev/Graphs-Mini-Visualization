@@ -1,4 +1,6 @@
-﻿namespace AI_Graphs.Graphs
+﻿using AI_Graphs.BusinessLogic.IteratorPattern;
+
+namespace AI_Graphs.Graphs
 {
 	public static class BFS
 	{
@@ -22,15 +24,29 @@
 					return ReconstructPath(parent, goal);
 				}
 
-				foreach (var neighbor in graph.adjList[current])
+				AdjencyListModel ADJ = new(graph.adjList);
+				IAdjListIterator iterator = ADJ.AdjList.GetIterator();
+
+				while (iterator.HasNext())
 				{
-					if (!visited[neighbor.country])
+					Node node = iterator.GetNext();
+					// Process the node
+					if (!visited[node.country])
 					{
-						visited[neighbor.country] = true;
-						queue.Enqueue(neighbor.country);
-						parent[neighbor.country] = current; // Track the parent of the neighbor for path reconstruction
+						visited[node.country] = true;
+						queue.Enqueue(node.country);
+						parent[node.country] = current; // Track the parent of the neighbor for path reconstruction
 					}
 				}
+				//foreach (var neighbor in graph.adjList[current])
+				//{
+				//	if (!visited[neighbor.country])
+				//	{
+				//		visited[neighbor.country] = true;
+				//		queue.Enqueue(neighbor.country);
+				//		parent[neighbor.country] = current; // Track the parent of the neighbor for path reconstruction
+				//	}
+				//}
 			}
 
 			return null; // No path found
