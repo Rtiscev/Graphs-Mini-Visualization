@@ -6,6 +6,8 @@ namespace AI_Graphs.BusinessLogic.IteratorPattern
 	// This is going to be an interface defining the operations for accessing and traversing elements in a sequence.
 	public interface IAdjListIterator
 	{
+		// get current
+		// move to next
 		bool HasNext();
 		Node GetNext();
 	}

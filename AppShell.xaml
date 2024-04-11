@@ -13,7 +13,7 @@
         </Tab>
 
         <Tab Title="View Images">
-            <ShellContent ContentTemplate="{DataTemplate local2:ImageProc}" />
+            <ShellContent ContentTemplate="{DataTemplate local2:ImageProc}" Route="messages" />
         </Tab>
     </TabBar>
 </Shell>

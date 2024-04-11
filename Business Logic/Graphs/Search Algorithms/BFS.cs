@@ -38,15 +38,6 @@ namespace AI_Graphs.Graphs
 						parent[node.country] = current; // Track the parent of the neighbor for path reconstruction
 					}
 				}
-				//foreach (var neighbor in graph.adjList[current])
-				//{
-				//	if (!visited[neighbor.country])
-				//	{
-				//		visited[neighbor.country] = true;
-				//		queue.Enqueue(neighbor.country);
-				//		parent[neighbor.country] = current; // Track the parent of the neighbor for path reconstruction
-				//	}
-				//}
 			}
 
 			return null; // No path found

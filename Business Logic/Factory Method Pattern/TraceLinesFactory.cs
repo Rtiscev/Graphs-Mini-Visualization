@@ -3,9 +3,9 @@
 namespace AI_Graphs.FactoryMethodPattern
 {
 	//Concrete Creators
-	public class TraceLinesFactory : DrawingMethodFactory
+	public class TraceLinesFactory : DrawingMethod
 	{
-		protected override IDrawingMethod CreateDrawingMethod()
+		public override IDrawingMethod CreateDrawMethod()
 		{
 			return new TraceLines();
 		}

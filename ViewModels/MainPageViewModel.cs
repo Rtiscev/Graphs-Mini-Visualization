@@ -66,8 +66,14 @@ namespace AI_Graphs.ViewModels
 			Methods = new() { "Depth First Search", "Breath First Search", "A Star", "Greedy Best First Search", "Uniform Cost", "Bidirectional Search" };
 			citiesIndex = new();
 			Paths = new();
+
+			canvas.SendBytesUp += Canvas_SendBytesUp;
 		}
 
+		private void Canvas_SendBytesUp(object sender, BusinessLogic.Utils.ByteArrayEventArgs e)
+		{
+
+		}
 
 		[RelayCommand]
 		void ReDraw()
@@ -94,7 +100,7 @@ namespace AI_Graphs.ViewModels
 			}
 
 			string content;
-			using (StreamReader reader = new(System.IO.Path.Combine(rootPath, "BusinessLogic\\Input\\map.csv")))
+			using (StreamReader reader = new(System.IO.Path.Combine(rootPath, "Business Logic\\Input\\map.csv")))
 			{
 				content = reader.ReadToEnd();
 			}
@@ -242,7 +248,7 @@ namespace AI_Graphs.ViewModels
 			}
 			else
 			{
-				DisplayMsg?.Invoke(this, new(""));
+				//DisplayMsg?.Invoke(this, new(""));
 				IsLocked = true;
 				IsNotInitialized = false;
 			}

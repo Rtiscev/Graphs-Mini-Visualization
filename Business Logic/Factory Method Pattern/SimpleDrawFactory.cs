@@ -3,9 +3,9 @@
 namespace AI_Graphs.FactoryMethodPattern
 {
 	//Concrete Creators
-	public class SimpleDrawFactory : DrawingMethodFactory
+	public class SimpleDrawFactory : DrawingMethod
 	{
-		protected override IDrawingMethod CreateDrawingMethod()
+		public override IDrawingMethod CreateDrawMethod()
 		{
 			return new SimpleDraw();
 		}

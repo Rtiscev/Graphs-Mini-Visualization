@@ -1,7 +1,6 @@
-﻿using AI_Graphs.FactoryMethodPattern;
-using AI_Graphs.Graphs;
+﻿using AI_Graphs.BusinessLogic.Utils;
+using AI_Graphs.FactoryMethodPattern;
 using AI_Graphs.SingletonPattern;
-using System.Numerics;
 
 namespace AI_Graphs.DrawingMethods
 {
@@ -11,6 +10,7 @@ namespace AI_Graphs.DrawingMethods
 		public bool IsTraceable = false;
 		public bool IsInitialized = false;
 
+		public event EventHandler<ByteArrayEventArgs> SendBytesUp;
 		public void ChangeRadius(float _radius)
 		{
 			DataCollection.GetInstance().Radius = _radius;
@@ -19,29 +19,31 @@ namespace AI_Graphs.DrawingMethods
 		{
 			if (IsInitialized)
 			{
-				IDrawingMethod drawingMethod;
+				DrawingMethod drawingMethod;
 				if (IsRandom)
 				{
-					drawingMethod = new SimpleDrawFactory().CreateMethod();
-					await drawingMethod.Draw(canvas, dirtyRect);
-
+					drawingMethod = new SimpleDrawFactory();
 					IsRandom = false;
 				}
 				else if (IsTraceable)
 				{
-					drawingMethod = new TraceLinesFactory().CreateMethod();
-					await drawingMethod.Draw(canvas, dirtyRect);
-
+					drawingMethod = new TraceLinesFactory();
 					IsTraceable = false;
 				}
 				else
 				{
-					drawingMethod = new ChangeColorsFactory().CreateMethod();
-					await drawingMethod.Draw(canvas, dirtyRect);
+					drawingMethod = new ChangeColorsFactory();
+					//drawingMethod.SendBytes += DrawingMethod_SendBytes;
 
 					IsRandom = false;
 				}
+				await drawingMethod.InitiateDraw(canvas, dirtyRect);
 			}
+		}
+
+		private void DrawingMethod_SendBytes(object sender, BusinessLogic.Utils.ByteArrayEventArgs e)
+		{
+			SendBytesUp?.Invoke(this, new(e.Data));
 		}
 	}
 }
