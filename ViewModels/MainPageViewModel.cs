@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Numerics;
+using System.Windows.Input;
 
 namespace AI_Graphs.ViewModels
 {

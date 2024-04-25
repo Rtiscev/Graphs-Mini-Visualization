@@ -1,109 +1,115 @@
-﻿using System.Numerics;
+﻿using AI_Graphs.SingletonPattern;
+using System.Numerics;
 
 namespace AI_Graphs.Utils
 {
-    public static class Utils
-    {
-        public static float GetRandomFloat(double range, double min)
-        {
-            Random rand = new();
-            double sample = rand.NextDouble();
-            double scaled = sample * range + min;
-            return (float)scaled;
-        }
-        public static List<Color> RandomColors(int amount)
-        {
-            List<Color> newColors = new();
+	public static class Utils
+	{
+		public static float GetRandomFloat(double range, double min)
+		{
+			Random rand = new();
+			double sample = rand.NextDouble();
+			double scaled = sample * range + min;
+			return (float)scaled;
+		}
+		public static List<Color> RandomColors()
+		{
+			int amount = DataCollection.GetInstance().Amount;
+			List<Color> newColors = new();
 
-            Random random = new();
-            for (int i = 0; i < amount; i++)
-            {
-                int randomR = random.Next(256);
-                int randomG = random.Next(256);
-                int randomB = random.Next(256);
-                Color color = new(randomR, randomG, randomB);
-                newColors.Add(color);
-            }
+			Random random = new();
+			for (int i = 0; i < amount; i++)
+			{
+				int randomR = random.Next(256);
+				int randomG = random.Next(256);
+				int randomB = random.Next(256);
+				Color color = new(randomR, randomG, randomB);
+				newColors.Add(color);
+			}
 
-            return newColors;
-        }
-        public static List<MyPoint> GeneratePoints(int width, int height, int numPoints, int minDistance)
-        {
-            int maxAttempts = 1000;
-            List<MyPoint> points = new List<MyPoint>();
-            Random random = new();
-            int attempts = 0;
+			return newColors;
+		}
+		public static List<MyPoint> GeneratePoints(int width, int height)
+		{
+			int numPoints = DataCollection.GetInstance().Amount;
+			int minDistance = (int)DataCollection.GetInstance().Radius;
 
-            while (points.Count < numPoints)
-            {
-                int x = random.Next(minDistance * 2 + 1, width - minDistance * 2 - 1);
-                int y = random.Next(minDistance * 2 + 1, height - minDistance * 2 - 1);
-                bool valid = true;
+			int maxAttempts = 1000;
 
-                // Check for collisions with existing points
-                foreach (var existingPoint in points)
-                {
-                    bool isOutOfBorders =
-                        x + minDistance * 2 >= width ||
-                        y + minDistance * 2 >= height ||
-                        x - minDistance * 2 <= 0 ||
-                        y - minDistance * 2 <= 0;
+			List<MyPoint> points = new List<MyPoint>();
+			Random random = new();
+			int attempts = 0;
 
-                    // Calculate the distance between the centers of the circles
-                    float distance = (float)Math.Sqrt(Math.Pow(existingPoint.X - x, 2) + Math.Pow(existingPoint.Y - y, 2));
+			while (points.Count < numPoints)
+			{
+				int x = random.Next(minDistance * 2 + 1, width - minDistance * 2 - 1);
+				int y = random.Next(minDistance * 2 + 1, height - minDistance * 2 - 1);
+				bool valid = true;
 
-                    // Check if the distance is less than the sum of the radii
-                    bool isIntersecting = distance <= 4 * minDistance + 4 * minDistance;
+				// Check for collisions with existing points
+				foreach (var existingPoint in points)
+				{
+					bool isOutOfBorders =
+						x + minDistance * 2 >= width ||
+						y + minDistance * 2 >= height ||
+						x - minDistance * 2 <= 0 ||
+						y - minDistance * 2 <= 0;
 
-                    if (isIntersecting || isOutOfBorders)
-                    {
-                        valid = false;
-                        break;
-                    }
-                    else if (attempts > maxAttempts)
-                    { valid = true; break; }
-                }
+					// Calculate the distance between the centers of the circles
+					float distance = (float)Math.Sqrt(Math.Pow(existingPoint.X - x, 2) + Math.Pow(existingPoint.Y - y, 2));
 
-                if (valid)
-                {
-                    points.Add(new MyPoint(x, y));
-                    attempts = 0;
-                }
+					// Check if the distance is less than the sum of the radii
+					bool isIntersecting = distance <= 4 * minDistance + 4 * minDistance;
 
-                attempts++;
-            }
+					if (isIntersecting || isOutOfBorders)
+					{
+						valid = false;
+						break;
+					}
+					else if (attempts > maxAttempts)
+					{ valid = true; break; }
+				}
 
-            return points;
-        }
-        public static bool CheckIfKeyExists(List<Dictionary<int, Vector2>> listik, int key)
-        {
-            bool exists = false;
-            foreach (var item in listik)
-            {
-                if (item.ContainsKey(key))
-                {
-                    exists = true;
-                    break;
-                }
-            }
-            return exists;
+				if (valid)
+				{
+					points.Add(new MyPoint(x, y));
+					attempts = 0;
+				}
 
-        }
-    }
-    public struct MyPoint
-    {
-        public float X; public float Y;
-        public MyPoint()
-        {
+				attempts++;
+			}
 
-        }
-        public MyPoint(float x, float y)
-        {
-            X = x; Y = y;
-        }
-        public MyPoint(double x, double y)
-        {
-            X = (float)x; Y = (float)y;
-        }
-    }
+			return points;
+		}
+		public static bool CheckIfKeyExists(List<Dictionary<int, Vector2>> listik, int key)
+		{
+			bool exists = false;
+			foreach (var item in listik)
+			{
+				if (item.ContainsKey(key))
+				{
+					exists = true;
+					break;
+				}
+			}
+			return exists;
+
+		}
+	}
+	public struct MyPoint
+	{
+		public float X; public float Y;
+		public MyPoint()
+		{
+
+		}
+		public MyPoint(float x, float y)
+		{
+			X = x; Y = y;
+		}
+		public MyPoint(double x, double y)
+		{
+			X = (float)x; Y = (float)y;
+		}
+	}
 }

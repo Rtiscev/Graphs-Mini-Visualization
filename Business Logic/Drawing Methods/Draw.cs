@@ -19,25 +19,25 @@ namespace AI_Graphs.DrawingMethods
 		{
 			if (IsInitialized)
 			{
-				DrawingMethod drawingMethod;
+				DrawingMethodFactory drawingMethodFactory;
 				if (IsRandom)
 				{
-					drawingMethod = new SimpleDrawFactory();
+					drawingMethodFactory = new SimpleDrawFactory();
 					IsRandom = false;
 				}
 				else if (IsTraceable)
 				{
-					drawingMethod = new TraceLinesFactory();
+					drawingMethodFactory = new TraceLinesFactory();
 					IsTraceable = false;
 				}
 				else
 				{
-					drawingMethod = new ChangeColorsFactory();
-					//drawingMethod.SendBytes += DrawingMethod_SendBytes;
-
+					drawingMethodFactory = new ChangeColorsFactory();
 					IsRandom = false;
 				}
-				await drawingMethod.InitiateDraw(canvas, dirtyRect);
+
+				IDrawingMethod dMethod = drawingMethodFactory.Create();
+				await dMethod.Draw(canvas, dirtyRect);
 			}
 		}
 

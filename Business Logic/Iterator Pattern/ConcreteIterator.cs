@@ -32,7 +32,7 @@ namespace AI_Graphs.BusinessLogic.IteratorPattern
 			return false;
 		}
 
-		public Node GetNext()
+		public Node GetCurrent()
 		{
 			if (HasNext())
 			{

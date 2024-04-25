@@ -1,0 +1,35 @@
+1 . BUILDER: 
+	in-built: MauiProgram.cs (builder)
+       	   resources:  https://learn.microsoft.com/en-us/dotnet/api/microsoft.maui.hosting.mauiappbuilder?view=net-maui-8.0
+	   custom: BusinessLogic/Builder Pattern
+2 . SINGLETON
+	in-built: MauiProgram.cs (AddSingleton)
+       	   resources:  https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.servicecollectionserviceextensions.addsingleton?view=dotnet-plat-ext-8.0
+	   custom: BusinessLogic/Singleton Pattern
+3 . ADAPTER
+	   custom: BusinessLogic/Adapter Pattern
+4 . FACADE
+	   custom: MainPageViewModel.cs, FindPath() Method, ctx.FindPath()
+     explanation: UniformCost_Strategy.cs has method Search that calls FindPath method, UniformCostSearch.cs works with Graph, Graph9Adapter, List, Hashset, PriorityQueue, Dictionary, Node
+5 . STRATEGY
+	   custom: BusinessLogic/Strategy Pattern
+6 . ITERATOR
+	   custom: BusinessLogic/Iterator Pattern
+7 . TEMPLATE METHOD
+	   custom: BusinessLogic/Template Method Pattern
+8 . MEMENTO
+	   custom: BusinessLogic/Memento Pattern
+9 . OBSERVER
+	in-built: MainPageViewModel, ImageProcViewModel (ObservableObject)
+       	   resources:  https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/observableobject
+		       https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/generators/observableproperty
+10. COMMAND
+	in-built: MainPageViewModel, ImageProcViewModel ([RelayCommand])
+       	   resources:  https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/generators/relaycommand
+		       https://learn.microsoft.com/en-us/dotnet/api/system.windows.input.icommand?view=net-8.0
+
+
+[Useful Information]
+Q: "Which are C# native built-in design patterns?"
+A: https://stackoverflow.com/questions/4041018/which-are-c-sharp-native-built-in-design-patterns
+A: https://web.archive.org/web/20120814171359/http://msdn.microsoft.com/en-us/magazine/cc188707.aspx

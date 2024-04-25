@@ -29,7 +29,7 @@ namespace AI_Graphs.Graphs
 
 				while (iterator.HasNext())
 				{
-					Node node = iterator.GetNext();
+					Node node = iterator.GetCurrent();
 					// Process the node
 					if (!visited[node.country])
 					{

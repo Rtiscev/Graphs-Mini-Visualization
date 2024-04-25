@@ -56,9 +56,6 @@
 				i = t_parent[i];
 			}
 			return path;
-			//Console.WriteLine("*****Path*****");
-			//foreach (int it in path) Console.Write(it + " ");
-			//Console.WriteLine();
 		}
 		// Method for bidirectional searching
 		public static List<int> BiDirSearch(Graph graph1, int s, int t)
@@ -119,15 +116,10 @@
 									  intersectNode);
 
 					// print the path and exit the program
-					//PrintPath(s_parent, t_parent, s, t,intersectNode);
 					return PrintPath(s_parent, t_parent, s, t, intersectNode);
-					//Environment.Exit(0);
-					//break;
 				}
 			}
 			return null;
 		}
 	}
-
-
 }

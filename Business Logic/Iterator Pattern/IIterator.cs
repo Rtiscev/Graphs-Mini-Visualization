@@ -9,6 +9,6 @@ namespace AI_Graphs.BusinessLogic.IteratorPattern
 		// get current
 		// move to next
 		bool HasNext();
-		Node GetNext();
+		Node GetCurrent();
 	}
 }

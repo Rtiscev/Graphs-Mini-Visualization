@@ -12,29 +12,20 @@ namespace AI_Graphs.DrawingMethods
 	class SimpleDraw : IDrawingMethod
 	{
 		private PrimitiveDrawing primitiveDrawing;
-		public SimpleDraw()
-		{
-			DataCollection.GetInstance().NodesLocations.Clear();
-			Radius = DataCollection.GetInstance().Radius;
-			Amount = DataCollection.GetInstance().Amount;
-			AdjList = DataCollection.GetInstance().AdjList;
-			ColorsList = DataCollection.GetInstance().ColorsList;
-			Paths = DataCollection.GetInstance().Paths;
-		}
+		//public SimpleDraw()
+		//{
+		//	DataCollection.GetInstance().NodesLocations.Clear();
+		//}
 
 		public event EventHandler<ByteArrayEventArgs> SendBytes;
 
 		public override async Task Draw(ICanvas canvas, RectF dirtyRect)
 		{
-			// update singleton data
-			DataCollection.GetInstance().NodesLocations = AI_Graphs.Utils.Utils.GeneratePoints((int)dirtyRect.Width, (int)dirtyRect.Height, Amount, (int)Radius);
-			DataCollection.GetInstance().ColorsList ??= AI_Graphs.Utils.Utils.RandomColors(Amount);
-			
-			primitiveDrawing=new(ref canvas);
+			//// update singleton data
+			DataCollection.GetInstance().NodesLocations = AI_Graphs.Utils.Utils.GeneratePoints((int)dirtyRect.Width, (int)dirtyRect.Height);
+			//DataCollection.GetInstance().ColorsList ??= AI_Graphs.Utils.Utils.RandomColors();
+			primitiveDrawing = new(ref canvas);
 			primitiveDrawing.Draw();
-			//primitiveDrawing.DrawLines();
-			//primitiveDrawing.DrawPaths();
-			//primitiveDrawing.DrawNodes();
 		}
 	}
 }
