@@ -3,7 +3,7 @@ using AI_Graphs.SingletonPattern;
 
 namespace AI_Graphs.FactoryMethodPattern
 {
-	//Concrete Creators
+	// Concrete Creator
 	public class SimpleDrawFactory : DrawingMethodFactory
 	{
 		public override IDrawingMethod Create()

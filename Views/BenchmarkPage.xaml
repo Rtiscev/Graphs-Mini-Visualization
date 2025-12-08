@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AI_Graphs.Views.BenchmarkPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:AI_Graphs.Models"
+    xmlns:viewmodels="clr-namespace:AI_Graphs.ViewModels"
+    x:DataType="viewmodels:BenchmarkViewModel"
+    BackgroundColor="#0D1117">
+
+    <ScrollView>
+        <Grid Padding="20,12" RowDefinitions="auto,auto,auto,*" RowSpacing="12">
+
+            <!-- Title Section - Compact -->
+            <Border 
+                Grid.Row="0" 
+                Padding="20,16"
+                StrokeThickness="0"
+                BackgroundColor="#161B22">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.3" Radius="8" Offset="0,4" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="6">
+                    <Label
+                        Text="⚡ Algorithm Performance Benchmark"
+                        FontSize="22"
+                        FontAttributes="Bold"
+                        HorizontalTextAlignment="Center"
+                        TextColor="#FF8C00" />
+                    <BoxView 
+                        HeightRequest="2" 
+                        WidthRequest="150" 
+                        BackgroundColor="#FF8C00" 
+                        HorizontalOptions="Center"
+                        CornerRadius="1" />
+                    <Label
+                        Text="Compare all search algorithms using Prototype Pattern"
+                        FontSize="12"
+                        HorizontalTextAlignment="Center"
+                        TextColor="#8B949E"
+                        Margin="0,4,0,0" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Configuration Section - Compact -->
+            <Border 
+                Grid.Row="1" 
+                Padding="16"
+                StrokeThickness="1"
+                Stroke="#30363D"
+                BackgroundColor="#161B22">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.2" Radius="6" Offset="0,2" />
+                </Border.Shadow>
+                <Grid ColumnDefinitions="2*,2*,1.3*" ColumnSpacing="16" RowSpacing="8">
+
+                    <!-- Start City -->
+                    <VerticalStackLayout Grid.Column="0" Spacing="6">
+                        <Label
+                            Text="🚀 Start City"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#58A6FF" />
+                        <Border
+                            Padding="10,6"
+                            StrokeThickness="1"
+                            Stroke="#30363D"
+                            BackgroundColor="#0D1117">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="4" />
+                            </Border.StrokeShape>
+                            <Picker
+                                ItemsSource="{Binding Cities}"
+                                SelectedItem="{Binding SelectedCity1}"
+                                TextColor="White"
+                                FontSize="13" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- End City -->
+                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                        <Label
+                            Text="🎯 End City"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#58A6FF" />
+                        <Border
+                            Padding="10,6"
+                            StrokeThickness="1"
+                            Stroke="#30363D"
+                            BackgroundColor="#0D1117">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="4" />
+                            </Border.StrokeShape>
+                            <Picker
+                                ItemsSource="{Binding Cities}"
+                                SelectedItem="{Binding SelectedCity2}"
+                                TextColor="White"
+                                FontSize="13" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Run Button -->
+                    <Border
+                        Grid.Column="2"
+                        StrokeThickness="0"
+                        Padding="0"
+                        VerticalOptions="End"
+                        BackgroundColor="#FF8C00"
+                        HeightRequest="44">
+                        <Border.Shadow>
+                            <Shadow Brush="#FF8C00" Opacity="0.4" Radius="12" Offset="0,4" />
+                        </Border.Shadow>
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="6" />
+                        </Border.StrokeShape>
+                        <Button
+                            Command="{Binding BenchmarkAllCommand}"
+                            Text="▶ Run"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            VerticalOptions="Fill"
+                            HorizontalOptions="Fill" />
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Status Section - Compact -->
+            <Border 
+                Grid.Row="2" 
+                Padding="12"
+                StrokeThickness="1"
+                Stroke="#FF8C00"
+                BackgroundColor="#1C2128"
+                IsVisible="{Binding IsBenchmarking}">
+                <Border.Shadow>
+                    <Shadow Brush="#FF8C00" Opacity="0.3" Radius="8" Offset="0,3" />
+                </Border.Shadow>
+                <HorizontalStackLayout Spacing="10">
+                    <ActivityIndicator 
+                        IsRunning="{Binding IsBenchmarking}" 
+                        Color="#FF8C00"
+                        WidthRequest="20"
+                        HeightRequest="20" />
+                    <Label
+                        Text="{Binding BenchmarkStatus}"
+                        TextColor="#FF8C00"
+                        FontSize="13"
+                        FontAttributes="Bold"
+                        VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Results Section - Compact -->
+            <Border 
+                Grid.Row="3" 
+                Padding="0"
+                StrokeThickness="1"
+                Stroke="#30363D"
+                BackgroundColor="#161B22"
+                MinimumHeightRequest="350">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.2" Radius="6" Offset="0,2" />
+                </Border.Shadow>
+                <Grid RowDefinitions="auto,*" RowSpacing="0">
+
+                    <!-- Compact Header Row with Sorting -->
+                    <Border 
+                        Grid.Row="0" 
+                        Padding="0"
+                        BackgroundColor="#1C2128"
+                        StrokeThickness="0">
+                        <Grid ColumnDefinitions="2.5*,*,*,auto" ColumnSpacing="0">
+
+                            <!-- Algorithm Header (Clickable) -->
+                            <Border Grid.Column="0" Padding="12,10" BackgroundColor="Transparent">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSortedByName}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="#2D1F0A" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SortByNameCommand}" />
+                                </Border.GestureRecognizers>
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="📊 Algorithm" FontAttributes="Bold" FontSize="12" TextColor="#FF8C00" VerticalTextAlignment="Center" />
+                                    <Label 
+                                        Text="{Binding NameSortIcon}" 
+                                        FontSize="14" 
+                                        FontAttributes="Bold"
+                                        TextColor="#FF8C00" 
+                                        IsVisible="{Binding IsSortedByName}"
+                                        VerticalTextAlignment="Center" />
+                                </HorizontalStackLayout>
+                            </Border>
+
+                            <!-- Path Length Header (Clickable) -->
+                            <Border Grid.Column="1" Padding="12,10" BackgroundColor="Transparent">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSortedByPath}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="#0D1B11" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SortByPathCommand}" />
+                                </Border.GestureRecognizers>
+                                <HorizontalStackLayout Spacing="6" HorizontalOptions="Center">
+                                    <Label Text="📏 Path" FontAttributes="Bold" FontSize="12" TextColor="#FF8C00" VerticalTextAlignment="Center" />
+                                    <Label 
+                                        Text="{Binding PathSortIcon}" 
+                                        FontSize="14" 
+                                        FontAttributes="Bold"
+                                        TextColor="#3FB950" 
+                                        IsVisible="{Binding IsSortedByPath}"
+                                        VerticalTextAlignment="Center" />
+                                </HorizontalStackLayout>
+                            </Border>
+
+                            <!-- Time Header (Clickable) -->
+                            <Border Grid.Column="2" Padding="12,10" BackgroundColor="Transparent">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSortedByTime}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="#1A1208" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SortByTimeCommand}" />
+                                </Border.GestureRecognizers>
+                                <HorizontalStackLayout Spacing="6" HorizontalOptions="Center">
+                                    <Label Text="⏱️ Time" FontAttributes="Bold" FontSize="12" TextColor="#FF8C00" VerticalTextAlignment="Center" />
+                                    <Label 
+                                        Text="{Binding TimeSortIcon}" 
+                                        FontSize="14" 
+                                        FontAttributes="Bold"
+                                        TextColor="#FFA657" 
+                                        IsVisible="{Binding IsSortedByTime}"
+                                        VerticalTextAlignment="Center" />
+                                </HorizontalStackLayout>
+                            </Border>
+
+                            <!-- Status Header (Non-clickable) -->
+                            <Border Grid.Column="3" Padding="12,10" WidthRequest="50">
+                                <Label Text="✓" FontAttributes="Bold" FontSize="12" TextColor="#FF8C00" HorizontalTextAlignment="Center" />
+                            </Border>
+
+                        </Grid>
+                    </Border>
+
+                    <!-- Results List - Compact -->
+                    <ScrollView Grid.Row="1">
+                        <CollectionView
+                            ItemsSource="{Binding BenchmarkResults}"
+                            SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:BenchmarkResult">
+                                    <Border 
+                                        Padding="12,10" 
+                                        Margin="0,0,0,1"
+                                        StrokeThickness="0"
+                                        BackgroundColor="#0D1117">
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="✓">
+                                                <Setter Property="BackgroundColor" Value="#0D1821" />
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        <Grid ColumnDefinitions="2.5*,*,*,auto" ColumnSpacing="10">
+
+                                            <!-- Algorithm Name -->
+                                            <HorizontalStackLayout Grid.Column="0" Spacing="6">
+                                                <BoxView 
+                                                    WidthRequest="3" 
+                                                    HeightRequest="24" 
+                                                    BackgroundColor="#58A6FF"
+                                                    CornerRadius="1.5"
+                                                    VerticalOptions="Center" />
+                                                <Label
+                                                    Text="{Binding AlgorithmName}"
+                                                    FontAttributes="Bold"
+                                                    FontSize="13"
+                                                    TextColor="#58A6FF"
+                                                    VerticalTextAlignment="Center" />
+                                            </HorizontalStackLayout>
+
+                                            <!-- Path Length -->
+                                            <Border 
+                                                Grid.Column="1"
+                                                Padding="6,4"
+                                                BackgroundColor="#1C2128"
+                                                StrokeThickness="0"
+                                                HorizontalOptions="Center">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="4" />
+                                                </Border.StrokeShape>
+                                                <Label
+                                                    Text="{Binding PathLength, StringFormat='{0} nodes'}"
+                                                    TextColor="#3FB950"
+                                                    FontSize="11"
+                                                    FontAttributes="Bold"
+                                                    HorizontalTextAlignment="Center"
+                                                    VerticalTextAlignment="Center" />
+                                            </Border>
+
+                                            <!-- Execution Time -->
+                                            <Border 
+                                                Grid.Column="2"
+                                                Padding="8,4"
+                                                BackgroundColor="#1C2128"
+                                                StrokeThickness="0"
+                                                HorizontalOptions="Center">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="4" />
+                                                </Border.StrokeShape>
+                                                <HorizontalStackLayout Spacing="3">
+                                                    <Label
+                                                        Text="{Binding ExecutionTimeMs}"
+                                                        TextColor="#FFA657"
+                                                        FontSize="12"
+                                                        FontAttributes="Bold"
+                                                        VerticalTextAlignment="Center" />
+                                                    <Label
+                                                        Text="ms"
+                                                        TextColor="#8B949E"
+                                                        FontSize="10"
+                                                        VerticalTextAlignment="Center" />
+                                                </HorizontalStackLayout>
+                                            </Border>
+
+                                            <!-- Status Icon -->
+                                            <Border
+                                                Grid.Column="3"
+                                                WidthRequest="28"
+                                                HeightRequest="28"
+                                                BackgroundColor="{Binding StatusColor}"
+                                                StrokeThickness="0"
+                                                HorizontalOptions="Center">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="14" />
+                                                </Border.StrokeShape>
+                                                <Label
+                                                    Text="{Binding Status}"
+                                                    TextColor="White"
+                                                    FontSize="14"
+                                                    FontAttributes="Bold"
+                                                    HorizontalTextAlignment="Center"
+                                                    VerticalTextAlignment="Center" />
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </ScrollView>
+</ContentPage>

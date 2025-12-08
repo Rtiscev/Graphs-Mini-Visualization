@@ -1,12 +1,12 @@
 ﻿using AI_Graphs.Graphs;
 
-namespace AI_Graphs.StrategyPattern
+namespace AI_Graphs.StrategyPattern;
+
+// Concrete Product
+public class Bidirectional_Strategy : ISearchStrategy
 {
-	public class Bidirectional_Strategy : ISearchStrategy
-	{
-		public List<int> Search(Graph graph, int start, int end, Dictionary<int, int> heuristicDistances)
-		{
-			return BidirectionalSearch.BiDirSearch(graph, start, end);
-		}
-	}
+    public List<int> Search(Graph graph, int start, int end, Dictionary<int, int> heuristicDistances)
+    {
+        return BidirectionalSearch.BiDirSearch(graph, start, end);
+    }
 }

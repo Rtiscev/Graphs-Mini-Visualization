@@ -14,7 +14,7 @@ namespace AI_Graphs.ViewModels
 {
     public partial class MainPageViewModel : ObservableObject
 	{
-		public event EventHandler<StringEventArgs> WorkCompleted;
+        public event EventHandler<StringEventArgs> WorkCompleted;
 		public event EventHandler<StringEventArgs> DisplayMsg;
 
 		[ObservableProperty]
@@ -166,7 +166,7 @@ namespace AI_Graphs.ViewModels
 				{  citiesIndex.FirstOrDefault(x => x.Value == "Zerind").Key, 374 }
 			};
 
-			IsLocked = true;
+            IsLocked = true;
 			IsNotInitialized = false;
 			Canvas.IsInitialized = true;
 			DataCollection.GetInstance().Amount = graph.numVertices;

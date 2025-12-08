@@ -2,7 +2,7 @@
 
 namespace AI_Graphs.FactoryMethodPattern
 {
-	//Concrete Creators
+	// Concrete Creators
 	public class ChangeColorsFactory : DrawingMethodFactory
 	{
 		public override IDrawingMethod Create()

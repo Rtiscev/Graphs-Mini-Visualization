@@ -17,7 +17,8 @@
         <Grid
             Grid.Row="0"
             Grid.ColumnSpan="2"
-            ColumnDefinitions=".2*,auto,auto,auto,auto,auto,auto,auto">
+            ColumnDefinitions=".2*,auto,auto,auto,auto,auto,auto,auto,auto"
+            ColumnSpacing="5">
             <Slider
                 Grid.Column="0"
                 Maximum="50"
@@ -95,6 +96,14 @@
                 Command="{Binding FindPathCommand}"
                 IsEnabled="{Binding IsLocked}"
                 Text="Find Path" />
+
+            <!-- NEW: Benchmark All Algorithms Button -->
+            <Button
+                Grid.Column="8"
+                Command="{Binding BenchmarkAllAlgorithmsCommand}"
+                IsEnabled="{Binding IsLocked}"
+                Text="Benchmark All"
+                BackgroundColor="DarkOrange" />
         </Grid>
 
         <GraphicsView
@@ -109,7 +118,7 @@
         <Grid
             Grid.Row="1"
             Grid.Column="0"
-            RowDefinitions="*,*"
+            RowDefinitions="*,*,auto"
             RowSpacing="15">
 
             <Border Grid.Row="0">
@@ -167,6 +176,53 @@
                                         WidthRequest="3"
                                         Color="Red" />
                                 </VerticalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+
+            <!-- NEW: Benchmark Results Section -->
+            <Border Grid.Row="2" Padding="10" BackgroundColor="#1A1A1A">
+                <Grid RowDefinitions="auto,*" RowSpacing="10">
+                    <Label 
+                        Grid.Row="0"
+                        Text="Algorithm Benchmark Results:"
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        TextColor="Orange" />
+                    <CollectionView
+                        Grid.Row="1"
+                        ItemsLayout="VerticalList"
+                        ItemsSource="{Binding BenchmarkResults}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:BenchmarkResult">
+                                <Frame Padding="5" Margin="0,2" BackgroundColor="#2A2A2A">
+                                    <Grid ColumnDefinitions="auto,*,auto,auto" ColumnSpacing="10">
+                                        <Label 
+                                            Grid.Column="0"
+                                            Text="{Binding AlgorithmName}" 
+                                            FontAttributes="Bold"
+                                            TextColor="LightBlue"
+                                            VerticalTextAlignment="Center" />
+                                        <Label 
+                                            Grid.Column="1"
+                                            Text="{Binding PathLength, StringFormat='Path: {0} nodes'}" 
+                                            TextColor="LightGreen"
+                                            VerticalTextAlignment="Center" />
+                                        <Label 
+                                            Grid.Column="2"
+                                            Text="{Binding ExecutionTimeMs, StringFormat='{0}ms'}" 
+                                            TextColor="Yellow"
+                                            VerticalTextAlignment="Center" />
+                                        <Label 
+                                            Grid.Column="3"
+                                            Text="{Binding Status}" 
+                                            TextColor="Gray"
+                                            FontSize="10"
+                                            VerticalTextAlignment="Center" />
+                                    </Grid>
+                                </Frame>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>

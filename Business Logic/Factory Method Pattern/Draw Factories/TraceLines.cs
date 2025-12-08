@@ -2,7 +2,7 @@
 
 namespace AI_Graphs.DrawingMethods
 {
-	// concrete product
+	// Concrete Product
 	public class TraceLines : IDrawingMethod
 	{
 		private ComplexDrawing complexDrawing;

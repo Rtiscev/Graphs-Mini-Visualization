@@ -15,5 +15,9 @@
         <Tab Title="View Images">
             <ShellContent ContentTemplate="{DataTemplate local2:ImageProc}" Route="messages" />
         </Tab>
+
+        <Tab Title="Benchmark Algorithms">
+            <ShellContent ContentTemplate="{DataTemplate local2:BenchmarkPage}" Route="benchmark" />
+        </Tab>
     </TabBar>
 </Shell>

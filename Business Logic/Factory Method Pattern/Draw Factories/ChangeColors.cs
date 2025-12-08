@@ -6,7 +6,7 @@ using SkiaSharp;
 
 namespace AI_Graphs.DrawingMethods
 {
-	// concrete product
+	// Concrete Product
 	public class ChangeColors : IDrawingMethod
 	{
 		private PrimitiveDrawing primitiveDrawing;
@@ -70,16 +70,14 @@ namespace AI_Graphs.DrawingMethods
 			// Using a MemoryStream for flexibility
 			using (var memoryStream = new MemoryStream())
 			{
-				bmp.Encode(memoryStream, SKEncodedImageFormat.Jpeg, 1000); // Adjust quality as needed
+				bmp.Encode(memoryStream, SKEncodedImageFormat.Jpeg, 1000); 
 				byte[] imageBytes = memoryStream.ToArray();
 				//SendBytes?.Invoke(this, new(imageBytes));
-				//Write the byte array to a file
 				using (FileStream fileStream = File.OpenWrite($"{rootPath}\\Business Logic\\Input\\image.jpg"))
 				{
 					await fileStream.WriteAsync(imageBytes, 0, imageBytes.Length);
 					await fileStream.FlushAsync();
 				}
-				// Now you have the image data in a byte array
 			}
 
 		}
