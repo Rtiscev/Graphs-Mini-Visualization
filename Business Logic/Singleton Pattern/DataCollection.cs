@@ -18,9 +18,11 @@ namespace AI_Graphs.SingletonPattern
 		public List<Dictionary<int, Vector2>> TraceableLines;
 		public Vector2 NewPosition = Vector2.Zero;
 		public int FromIndex;
+		public float CanvasWidth;
+		public float CanvasHeight;
 
-		//This variable is going to store the Singleton Instance
-		private static DataCollection Instance = null;
+        //This variable is going to store the Singleton Instance
+        private static DataCollection Instance = null;
 
 		//To use the lock, we need to create one variable
 		private static readonly object Instancelock = new object();

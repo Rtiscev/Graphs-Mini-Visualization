@@ -32,7 +32,7 @@ namespace AI_Graphs.DrawingMethods
                 }
                 else
                 {
-                    drawingMethodFactory = new ChangeColorsFactory();
+                    drawingMethodFactory = new SaveGraphImageFactory();
                     IsRandom = false;
                 }
 

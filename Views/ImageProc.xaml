@@ -4,35 +4,128 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodel="clr-namespace:AI_Graphs.ViewModels"
-    x:DataType="viewmodel:ImageProcViewModel">
-    <Grid ColumnDefinitions="auto,*">
-        <Grid Grid.Column="0" RowDefinitions="auto,auto,auto,auto,auto">
-            <Button
-                Grid.Row="0"
-                Grid.Column="0"
-                Command="{Binding FlipCommand}"
-                Text="Flip" />
-            <Button
-                Grid.Row="1"
-                Grid.Column="0"
-                Command="{Binding BlurCommand}"
-                Text="Blur" />
-            <Button
-                Grid.Row="2"
-                Grid.Column="0"
-                Command="{Binding UndoCommand}"
-                Text="Undo" />
-            <Button
-                Grid.Row="3"
-                Grid.Column="0"
-                Command="{Binding RedoCommand}"
-                Text="Undo" />
-            <Button
-                Grid.Row="4"
-                Grid.Column="0"
-                Command="{Binding LoadImageCommand}"
-                Text="Load" />
-        </Grid>
-        <ContentView Grid.Column="1" Content="{Binding ActualImage}" />
+    x:DataType="viewmodel:ImageProcViewModel"
+    Title="Image Processing">
+
+    <Grid ColumnDefinitions="250,*">
+
+        <!-- Left Panel: Controls -->
+        <ScrollView Grid.Column="0" Padding="10">
+            <VerticalStackLayout Spacing="10">
+
+                <!-- File Operations -->
+                <Label 
+                    Text="File" 
+                    FontSize="18" 
+                    FontAttributes="Bold" 
+                    Margin="0,0,0,5"/>
+                <Button Command="{Binding LoadImageCommand}" Text="Load Image" />
+                <Button Command="{Binding ResetCommand}" Text="Reset" />
+
+                <BoxView HeightRequest="1" Color="Gray" Margin="0,10"/>
+
+                <!-- Basic Transformations -->
+                <Label 
+                    Text="Transform" 
+                    FontSize="18" 
+                    FontAttributes="Bold" 
+                    Margin="0,0,0,5"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="5" RowSpacing="5">
+                    <Button Grid.Column="0" Command="{Binding FlipCommand}" Text="Flip" />
+                    <Button Grid.Column="1" Command="{Binding Rotate180Command}" Text="Rotate 180°" />
+                    <Button Grid.Row="1" Grid.Column="0" Command="{Binding RotateLeftCommand}" Text="↶ 90°" />
+                    <Button Grid.Row="1" Grid.Column="1" Command="{Binding RotateRightCommand}" Text="↷ 90°" />
+                </Grid>
+
+                <BoxView HeightRequest="1" Color="Gray" Margin="0,10"/>
+
+                <!-- Color Filters -->
+                <Label 
+                    Text="Color Filters" 
+                    FontSize="18" 
+                    FontAttributes="Bold" 
+                    Margin="0,0,0,5"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="5" RowSpacing="5">
+                    <Button Grid.Column="0" Command="{Binding GrayscaleCommand}" Text="Grayscale" />
+                    <Button Grid.Column="1" Command="{Binding BlackAndWhiteCommand}" Text="B&amp;W"/>
+                    <Button Grid.Row="1" Grid.Column="0" Command="{Binding SepiaCommand}" Text="Sepia" />
+                    <Button Grid.Row="1" Grid.Column="1" Command="{Binding InvertCommand}" Text="Invert" />
+                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding PolaroidCommand}" Text="Polaroid" />
+                    <Button Grid.Row="2" Grid.Column="1" Command="{Binding ComicCommand}" Text="Comic" />
+                    <Button Grid.Row="3" Grid.Column="0" Command="{Binding LomographCommand}" Text="Lomograph" />
+                </Grid>
+
+                <BoxView HeightRequest="1" Color="Gray" Margin="0,10"/>
+
+                <!-- Adjustments -->
+                <Label 
+                    Text="Adjustments" 
+                    FontSize="18" 
+                    FontAttributes="Bold" 
+                    Margin="0,0,0,5"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="5" RowSpacing="5">
+                    <Button Grid.Column="0" Command="{Binding HighContrastCommand}" Text="High Contrast" />
+                    <Button Grid.Column="1" Command="{Binding LowContrastCommand}" Text="Low Contrast" />
+                    <Button Grid.Row="1" Grid.Column="0" Command="{Binding IncreaseBrightnessCommand}" Text="Brighten" />
+                    <Button Grid.Row="1" Grid.Column="1" Command="{Binding DecreaseBrightnessCommand}" Text="Darken" />
+                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding HighSaturationCommand}" Text="Saturate" />
+                    <Button Grid.Row="2" Grid.Column="1" Command="{Binding LowSaturationCommand}" Text="Desaturate" />
+                </Grid>
+
+                <BoxView HeightRequest="1" Color="Gray" Margin="0,10"/>
+
+                <!-- Effects -->
+                <Label 
+                    Text="Effects" 
+                    FontSize="18" 
+                    FontAttributes="Bold" 
+                    Margin="0,0,0,5"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="5" RowSpacing="5">
+                    <Button Grid.Column="0" Command="{Binding GaussianBlurCommand}" Text="Blur" />
+                    <Button Grid.Column="1" Command="{Binding SharpenCommand}" Text="Sharpen" />
+                    <Button Grid.Row="1" Grid.Column="0" Command="{Binding PixelateCommand}" Text="Pixelate" />
+                    <Button Grid.Row="1" Grid.Column="1" Command="{Binding HalftoneCommand}" Text="Halftone" />
+                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding VignetteCommand}" Text="Vignette" />
+                </Grid>
+
+                <BoxView HeightRequest="1" Color="Gray" Margin="0,10"/>
+
+                <!-- Export Presets -->
+                <Label 
+                    Text="Export Presets" 
+                    FontSize="18" 
+                    FontAttributes="Bold" 
+                    Margin="0,0,0,5"/>
+                <Button Command="{Binding ExportHighContrastCommand}" Text="High Contrast (Presentation)" />
+                <Button Command="{Binding ExportPrintReadyCommand}" Text="Print Ready (Grayscale)" />
+                <Button Command="{Binding ExportVintageCommand}" Text="Vintage (Sepia + Vignette)" />
+
+                <BoxView HeightRequest="1" Color="Gray" Margin="0,10"/>
+
+                <!-- History -->
+                <Label 
+                    Text="History" 
+                    FontSize="18" 
+                    FontAttributes="Bold" 
+                    Margin="0,0,0,5"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="5">
+                    <Button Grid.Column="0" Command="{Binding UndoCommand}" Text="⟲ Undo" />
+                    <Button Grid.Column="1" Command="{Binding RedoCommand}" Text="⟳ Redo" />
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Right Panel: Image Display -->
+        <Border 
+            Grid.Column="1" 
+            StrokeThickness="1" 
+            Stroke="Gray" 
+            Margin="10"
+            Padding="10"
+            BackgroundColor="#1E1E1E">
+            <ContentView Content="{Binding ActualImage}" />
+        </Border>
+
     </Grid>
 </ContentPage>

@@ -1,185 +1,311 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImageProcessor;
+using ImageProcessor.Imaging.Filters.Photo;
 using AI_Graphs.Business_Logic.Memento_Pattern;
 using AI_Graphs.Business_Logic.Builder_Pattern;
 
 namespace AI_Graphs.ViewModels
 {
-	public partial class ImageProcViewModel : ObservableObject
-	{
-		byte[] workingImage;
-		int currentPosition = 0;
+    public partial class ImageProcViewModel : ObservableObject
+    {
+        private byte[] workingImage;
+        private int currentPosition = 0;
+        private readonly Originator originator;
+        private Caretaker caretaker;
+        private readonly string imagePath;
+
+        [ObservableProperty]
+        Image actualImage;
+
+        public ImageProcViewModel()
+        {
+            workingImage = [];
+            originator = new Originator { _workingImage = workingImage };
+            caretaker = new Caretaker();
+
+            SaveState();
+            imagePath = GetImagePath();
+        }
+
+        private static string GetImagePath()
+        {
+            string rootPath = Environment.ProcessPath;
+            for (int i = 0; i < 6; i++)
+            {
+                rootPath = Directory.GetParent(rootPath)?.FullName ?? rootPath;
+            }
+            return Path.Combine(rootPath, "Business Logic", "Input", "graph.png");
+        }
+
+        private void SaveState()
+        {
+            originator._workingImage = workingImage;
+            Memento memento = originator.CreateMemento();
 
 
-		Originator originator;
-		Caretaker caretaker;
-		[ObservableProperty]
-		Image actualImage;
+            caretaker.SetMemento(memento);
+            currentPosition = caretaker.GetCount() - 1;
+        }
 
-		string actualPath;
-		public ImageProcViewModel()
-		{
-			workingImage = Enumerable.Repeat((byte)0, 1000).ToArray();
-			originator = new() { _workingImage = workingImage };
-			caretaker = new();
-			Memento memento = originator.CreateMemento();
-			caretaker.SetMemento(memento);
+        private void UpdateDisplay()
+        {
+            if (workingImage == null || workingImage.Length == 0)
+            {
+                ActualImage = null;
+                return;
+            }
 
-			// process file
-			string rootPath = Environment.ProcessPath;
-			for (int oo = 0; oo < 6; oo++)
-			{
-				rootPath = Directory.GetParent(rootPath).FullName;
-			}
-			actualPath = System.IO.Path.Combine(rootPath, "Business Logic\\Input\\image.jpg");
-		}
+            ImageBuilder builder = new ImageBuilder();
+            builder.SetSource(workingImage)
+                   .SetAspect(Aspect.AspectFit)
+                   .SetIsOpaque(false);
 
-		[RelayCommand]
-		void LoadImage()
-		{
-			workingImage = File.ReadAllBytes(actualPath);
-			using (MemoryStream inStream = new MemoryStream(workingImage))
-			{
-				using (MemoryStream outStream = new MemoryStream())
-				{
-					// Initialize the ImageFactory using the overload to preserve EXIF metadata.
-					using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
-					{
-						// Load, resize, set the format and quality and save an image.
-						imageFactory.Load(inStream)
-									.Save(outStream);
-					}
-					// Do something with the stream.
-					using (var memoryStream = new MemoryStream())
-					{
-						outStream.CopyTo(memoryStream);
-						workingImage = memoryStream.ToArray();
+            ActualImage = builder.Build();
+        }
 
-						originator._workingImage = workingImage;
-						Memento memento = originator.CreateMemento();
-						caretaker.SetMemento(memento);
-						currentPosition++;
-					}
+        private void ApplyTransformation(Action<ImageFactory> transformation)
+        {
+            if (workingImage == null || workingImage.Length == 0)
+            {
+                return;
+            }
 
-					ImageBuilder builder = new();
-					builder.SetSource(workingImage)
-						   .SetAspect(Aspect.AspectFit)
-						   .SetIsOpaque(false);
+            using (MemoryStream inStream = new MemoryStream(workingImage))
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
+                {
+                    imageFactory.Load(inStream);
+                    transformation(imageFactory);
+                    imageFactory.Save(outStream);
+                }
 
-					ActualImage = builder.Build();
-					//ActualImage = new Image() { Source = ImageSource.FromStream(() => new MemoryStream(workingImage)) };
-				}
-			}
-		}
+                workingImage = outStream.ToArray();
+            }
 
-		[RelayCommand]
-		void Flip()
-		{
-			using (MemoryStream inStream = new MemoryStream(workingImage))
-			{
-				using (MemoryStream outStream = new MemoryStream())
-				{
-					// Initialize the ImageFactory using the overload to preserve EXIF metadata.
-					using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
-					{
-						// Load, resize, set the format and quality and save an image.
-						imageFactory.Load(inStream)
-									.Flip()
-									.Save(outStream);
-					}
-					// Do something with the stream.
-					using (var memoryStream = new MemoryStream())
-					{
-						outStream.CopyTo(memoryStream);
-						workingImage = memoryStream.ToArray();
+            SaveState();
+            UpdateDisplay();
+        }
 
-						originator._workingImage = workingImage;
-						Memento memento = originator.CreateMemento();
-						caretaker.SetMemento(memento);
-						currentPosition++;
-					}
+        [RelayCommand]
+        void LoadImage()
+        {
+            try
+            {
+                if (!File.Exists(imagePath))
+                {
+                    return;
+                }
 
-					ImageBuilder builder = new();
-					builder.SetSource(workingImage)
-						   .SetAspect(Aspect.AspectFit)
-						   .SetIsOpaque(false);
+                workingImage = File.ReadAllBytes(imagePath);
 
-					ActualImage = builder.Build();
-					//ActualImage = new Image() { Source = ImageSource.FromStream(() => new MemoryStream(workingImage)) };
-				}
-			}
-		}
-		[RelayCommand]
-		void Blur()
-		{
-			using (MemoryStream inStream = new MemoryStream(workingImage))
-			{
-				using (MemoryStream outStream = new MemoryStream())
-				{
-					// Initialize the ImageFactory using the overload to preserve EXIF metadata.
-					using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
-					{
-						// Load, resize, set the format and quality and save an image.
-						imageFactory.Load(inStream)
-									.Halftone()
-									.Save(outStream);
-					}
-					// Do something with the stream.
-					using (var memoryStream = new MemoryStream())
-					{
-						outStream.CopyTo(memoryStream);
-						workingImage = memoryStream.ToArray();
+                caretaker = new Caretaker();
+                currentPosition = 0;
 
-						originator._workingImage = workingImage;
-						Memento memento = originator.CreateMemento();
-						caretaker.SetMemento(memento);
-						currentPosition++;
-					}
+                SaveState();
+                UpdateDisplay();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load: {ex.Message}");
+            }
+        }
 
-					ImageBuilder builder = new();
-					builder.SetSource(workingImage)
-						   .SetAspect(Aspect.AspectFit)
-						   .SetIsOpaque(false);
 
-					ActualImage = builder.Build();
-					//ActualImage = new Image() { Source = ImageSource.FromStream(() => new MemoryStream(workingImage)) };
-				}
-			}
-		}
-		[RelayCommand]
-		void Undo()
-		{
-			if (currentPosition > 1)
-			{
-				currentPosition--;
-				originator.SetMemento(caretaker.GetMemento(currentPosition));
+        [RelayCommand]
+        void Flip()
+        {
+            ApplyTransformation(factory => factory.Flip());
+        }
 
-				ImageBuilder builder = new();
-				builder.SetSource(originator._workingImage)
-					   .SetAspect(Aspect.AspectFit)
-					   .SetIsOpaque(false);
+        [RelayCommand]
+        void RotateLeft()
+        {
+            ApplyTransformation(factory => factory.Rotate(-90));
+        }
 
-				ActualImage = builder.Build();
-				//ActualImage = new Image() { Source = ImageSource.FromStream(() => new MemoryStream(originator._workingImage)) };
-			}
+        [RelayCommand]
+        void RotateRight()
+        {
+            ApplyTransformation(factory => factory.Rotate(90));
+        }
 
-		}
-		[RelayCommand]
-		void Redo()
-		{
-			if (currentPosition < caretaker.GetCount() - 1)
-			{
-				currentPosition++;
-				originator.SetMemento(caretaker.GetMemento(currentPosition));
-				ImageBuilder builder = new();
-				builder.SetSource(originator._workingImage)
-					   .SetAspect(Aspect.AspectFit)
-					   .SetIsOpaque(false);
+        [RelayCommand]
+        void Rotate180()
+        {
+            ApplyTransformation(factory => factory.Rotate(180));
+        }
 
-				ActualImage = builder.Build();
-				//ActualImage = new Image() { Source = ImageSource.FromStream(() => new MemoryStream(originator._workingImage)) };
-			}
-		}
-	}
+
+        [RelayCommand]
+        void Grayscale()
+        {
+            ApplyTransformation(factory => factory.Filter(MatrixFilters.GreyScale));
+        }
+
+        [RelayCommand]
+        void BlackAndWhite()
+        {
+            ApplyTransformation(factory => factory.Filter(MatrixFilters.BlackWhite));
+        }
+
+        [RelayCommand]
+        void Sepia()
+        {
+            ApplyTransformation(factory => factory.Filter(MatrixFilters.Sepia));
+        }
+
+        [RelayCommand]
+        void Invert()
+        {
+            ApplyTransformation(factory => factory.Filter(MatrixFilters.Invert));
+        }
+
+        [RelayCommand]
+        void Polaroid()
+        {
+            ApplyTransformation(factory => factory.Filter(MatrixFilters.Polaroid));
+        }
+
+        [RelayCommand]
+        void Comic()
+        {
+            ApplyTransformation(factory => factory.Filter(MatrixFilters.Comic));
+        }
+
+        [RelayCommand]
+        void Lomograph()
+        {
+            ApplyTransformation(factory => factory.Filter(MatrixFilters.Lomograph));
+        }
+
+
+        [RelayCommand]
+        void HighContrast()
+        {
+            ApplyTransformation(factory => factory.Contrast(50));
+        }
+
+        [RelayCommand]
+        void LowContrast()
+        {
+            ApplyTransformation(factory => factory.Contrast(-30));
+        }
+
+        [RelayCommand]
+        void IncreaseBrightness()
+        {
+            ApplyTransformation(factory => factory.Brightness(30));
+        }
+
+        [RelayCommand]
+        void DecreaseBrightness()
+        {
+            ApplyTransformation(factory => factory.Brightness(-30));
+        }
+
+        [RelayCommand]
+        void HighSaturation()
+        {
+            ApplyTransformation(factory => factory.Saturation(80));
+        }
+
+        [RelayCommand]
+        void LowSaturation()
+        {
+            ApplyTransformation(factory => factory.Saturation(-50));
+        }
+
+
+        [RelayCommand]
+        void GaussianBlur()
+        {
+            ApplyTransformation(factory => factory.GaussianBlur(5));
+        }
+
+        [RelayCommand]
+        void Sharpen()
+        {
+            ApplyTransformation(factory => factory.GaussianSharpen(5));
+        }
+
+        [RelayCommand]
+        void Halftone()
+        {
+            ApplyTransformation(factory => factory.Halftone());
+        }
+
+
+        [RelayCommand]
+        void Pixelate()
+        {
+            ApplyTransformation(factory => factory.Pixelate(8));
+        }
+
+        [RelayCommand]
+        void Vignette()
+        {
+            ApplyTransformation(factory => factory.Vignette());
+        }
+
+
+        [RelayCommand]
+        void ExportHighContrast()
+        {
+            ApplyTransformation(factory =>
+                factory.Filter(MatrixFilters.GreyScale)
+                       .Contrast(60)
+                       .Brightness(10));
+        }
+
+        [RelayCommand]
+        void ExportPrintReady()
+        {
+            ApplyTransformation(factory =>
+                factory.Filter(MatrixFilters.GreyScale)
+                       .Contrast(20)
+                       .Quality(100));
+        }
+
+        [RelayCommand]
+        void ExportVintage()
+        {
+            ApplyTransformation(factory =>
+                factory.Filter(MatrixFilters.Sepia)
+                       .Vignette()
+                       .Contrast(15));
+        }
+
+
+        [RelayCommand]
+        void Undo()
+        {
+            if (currentPosition > 0)
+            {
+                currentPosition--;
+                originator.SetMemento(caretaker.GetMemento(currentPosition));
+                workingImage = originator._workingImage;
+                UpdateDisplay();
+            }
+        }
+
+        [RelayCommand]
+        void Redo()
+        {
+            if (currentPosition < caretaker.GetCount() - 1)
+            {
+                currentPosition++;
+                originator.SetMemento(caretaker.GetMemento(currentPosition));
+                workingImage = originator._workingImage;
+                UpdateDisplay();
+            }
+        }
+
+        [RelayCommand]
+        void Reset()
+        {
+            LoadImage();
+        }
+    }
 }

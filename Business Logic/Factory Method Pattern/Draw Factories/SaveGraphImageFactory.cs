@@ -3,11 +3,11 @@
 namespace AI_Graphs.FactoryMethodPattern
 {
 	// Concrete Creators
-	public class ChangeColorsFactory : DrawingMethodFactory
+	public class SaveGraphImageFactory : DrawingMethodFactory
 	{
 		public override IDrawingMethod Create()
 		{
-			return new ChangeColors();
+			return new SaveGraphImage();
 		}
 	}
 }
