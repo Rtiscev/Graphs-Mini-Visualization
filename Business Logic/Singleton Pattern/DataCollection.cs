@@ -1,4 +1,5 @@
-﻿using AI_Graphs.Graphs;
+﻿using AI_Graphs.FacadePattern;
+using AI_Graphs.Graphs;
 using AI_Graphs.Utils;
 using System.Numerics;
 

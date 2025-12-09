@@ -1,4 +1,5 @@
 ﻿using AI_Graphs.DrawingMethods;
+using AI_Graphs.FacadePattern;
 using AI_Graphs.SingletonPattern;
 
 namespace AI_Graphs.FactoryMethodPattern
@@ -8,10 +9,12 @@ namespace AI_Graphs.FactoryMethodPattern
 	{
 		public override IDrawingMethod Create()
 		{
-			var method = new SimpleDraw();
+            var facade = new GraphGenerationFacade();
+
+            var method = new SimpleDraw();
 			DataCollection.GetInstance().NodesLocations.Clear();
 			// update singleton data
-			DataCollection.GetInstance().ColorsList ??= AI_Graphs.Utils.Utils.RandomColors();
+			DataCollection.GetInstance().ColorsList ??= facade.GenerateColorScheme();
 			return method;
 		}
 	}

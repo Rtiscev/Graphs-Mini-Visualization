@@ -1,5 +1,6 @@
 ﻿using AI_Graphs.BusinessLogic.DecoratorPattern;
 using AI_Graphs.BusinessLogic.Utils;
+using AI_Graphs.FacadePattern;
 using AI_Graphs.SingletonPattern;
 using AI_Graphs.Utils;
 using SkiaSharp;
@@ -16,7 +17,10 @@ namespace AI_Graphs.DrawingMethods
 
 		public override async Task Draw(ICanvas canvas, RectF dirtyRect)
 		{
-			List<Color> colors = ColorsList = DataCollection.GetInstance().ColorsList = AI_Graphs.Utils.Utils.RandomColors();
+            var facade = new GraphGenerationFacade();
+			
+
+            List<Color> colors = ColorsList = DataCollection.GetInstance().ColorsList = facade.GenerateColorScheme();
 			primitiveDrawing = new(ref canvas);
 			primitiveDrawing.Draw();
 

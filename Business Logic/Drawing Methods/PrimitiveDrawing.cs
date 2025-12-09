@@ -1,6 +1,6 @@
-﻿using AI_Graphs.SingletonPattern;
+﻿using AI_Graphs.FacadePattern;
+using AI_Graphs.SingletonPattern;
 using AI_Graphs.Template_Method_Pattern;
-using AI_Graphs.Utils;
 
 namespace AI_Graphs.BusinessLogic.DecoratorPattern
 {

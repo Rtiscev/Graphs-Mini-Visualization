@@ -1,4 +1,5 @@
-﻿using AI_Graphs.SingletonPattern;
+﻿using AI_Graphs.FacadePattern;
+using AI_Graphs.SingletonPattern;
 using AI_Graphs.Utils;
 using System.Numerics;
 
@@ -88,8 +89,8 @@ namespace AI_Graphs.Template_Method_Pattern
 				}
 			}
 
-			// draw new
-			if (TraceableLines.Count > 0 && AI_Graphs.Utils.Utils.CheckIfKeyExists(TraceableLines, FromIndex))
+            // draw new
+            if (TraceableLines.Count > 0 && MathUtils.CheckIfKeyExists(TraceableLines, FromIndex))
 			{
 				TraceableLines[^1] = dic1;
 			}
