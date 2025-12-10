@@ -14,6 +14,7 @@ namespace AI_Graphs.ViewModels
         private readonly Originator originator;
         private Caretaker caretaker;
         private readonly string imagePath;
+        private readonly ImageDirector _imageDirector;
 
         [ObservableProperty]
         Image actualImage;
@@ -23,6 +24,7 @@ namespace AI_Graphs.ViewModels
             workingImage = [];
             originator = new Originator { _workingImage = workingImage };
             caretaker = new Caretaker();
+            _imageDirector = new ImageDirector(new ImageBuilder());
 
             SaveState();
             imagePath = GetImagePath();
@@ -56,12 +58,10 @@ namespace AI_Graphs.ViewModels
                 return;
             }
 
-            ImageBuilder builder = new ImageBuilder();
-            builder.SetSource(workingImage)
-                   .SetAspect(Aspect.AspectFit)
-                   .SetIsOpaque(false);
-
-            ActualImage = builder.Build();
+            var builder = new ImageBuilder();
+            _imageDirector.SetBuilder(builder);
+            _imageDirector.ConstructGraphImage(workingImage);
+            ActualImage = builder.GetResult();
         }
 
         private void ApplyTransformation(Action<ImageFactory> transformation)
